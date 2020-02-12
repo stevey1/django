@@ -4,9 +4,10 @@ from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
 class UserSerializer(serializers.ModelSerializer):
+    snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())   
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups']
+        fields = ['url', 'username', 'email', 'groups','snippets']
 
 
 class GroupSerializer(serializers.ModelSerializer): #HyperlinkedModelSerializer = ModelSerializer ?
@@ -18,10 +19,13 @@ class SnippetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Snippet
         fields = ['id', 'title', 'code', 'linenos', 'language', 'style']
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)   
+             
 '''
 # SnippetSerializer(model object/python object), #.data, is_valid(), .validated_data .save()
-# serialize:  1. SnippetSerializer(model), 2. JSONRenderer().render(serializer.data)
-# deserialize 1. JasonString b string, 2 into stream, 3.JSONParser().parse(stream) 4.SnippetSerializer(data=data), is_valid(), .validated_data .save()
+# serialize: SnippetSerializer(model)->JSONRenderer().render(serializer.data)
+# deserialize: JasonString b string->into stream->JSONParser().parse(stream) 4.SnippetSerializer(data=data), is_valid(), .validated_data .save()
 class SnippetSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(required=False, allow_blank=True, max_length=100)
