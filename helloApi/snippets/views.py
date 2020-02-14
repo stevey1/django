@@ -24,7 +24,12 @@ from rest_framework import generics
 from rest_framework import renderers
 from rest_framework.decorators import action
 
-
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'snippets': reverse('snippet-list', request=request, format=format)
+    })
 
 class SnippetViewSet(viewsets.ModelViewSet):
     """
@@ -60,32 +65,9 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-snippet_list = SnippetViewSet.as_view({
-    'get': 'list',
-    'post': 'create'
-})
-snippet_detail = SnippetViewSet.as_view({
-    'get': 'retrieve',
-    'put': 'update',
-    'patch': 'partial_update',
-    'delete': 'destroy'
-})
-snippet_highlight = SnippetViewSet.as_view({
-    'get': 'highlight'
-}, renderer_classes=[renderers.StaticHTMLRenderer])
-user_list = UserViewSet.as_view({
-    'get': 'list'
-})
-user_detail = UserViewSet.as_view({
-    'get': 'retrieve'
-})
+
 '''
-@api_view(['GET'])
-def api_root(request, format=None):
-    return Response({
-        'users': reverse('userlist', request=request, format=format),
-        'snippets': reverse('snippetlist', request=request, format=format)
-    })
+
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer    
