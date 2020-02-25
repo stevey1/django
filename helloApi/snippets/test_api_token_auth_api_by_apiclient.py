@@ -9,7 +9,7 @@ class test_token_api_auth(TestCase):
     #def __init__(self,*args):
     @classmethod
     def setUpClass(cls):
-        user=User.objects.create_superuser(username='test-token',email='token@hotmail.com', password='password2', is_staff=True)
+        User.objects.create_superuser(username='test-token',email='token@hotmail.com', password='password2', is_staff=True)
 
     @classmethod
     def tearDownClass(cls):
