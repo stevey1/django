@@ -47,6 +47,15 @@ class test_snippets(TestCase):
         res = self.client.post('/snippets/',{'title': 'title2','code':'code2'}, format='json')
         self.assertEqual(res.status_code, 201)
 
+    def test_post_snippets_should_fail(self):
+        user = User.objects.get(pk=1)
+        self.client.force_authenticate(user=user)
+        #client.auth = HTTPBasicAuth('user', 'pass')
+        #self.client.login(username='steve', password='')
+        res = self.client.post('/snippets/',{'title': 'title2 django','code':'code2'}, format='json')
+        self.assertEqual(res.status_code, 400)
+        self.assertTrue('title' in res.data)
+
     def test_get_snippet_detail(self):
         res = self.client.get('/snippets/1/')
         self.assertEqual(res.status_code, 200)

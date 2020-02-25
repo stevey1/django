@@ -27,6 +27,13 @@ class SnippetSerializer(serializers.HyperlinkedModelSerializer):
         model = Snippet
         fields = ['url', 'id', 'highlight', 'owner',
                   'title', 'code', 'linenos', 'language', 'style']
+    def validate_title(self, value):
+        """
+        Check that the blog post is about Django.
+        """
+        if value and 'django' in value.lower():
+            raise serializers.ValidationError("Blog post is not about Django")
+        return value                  
  
              
 '''

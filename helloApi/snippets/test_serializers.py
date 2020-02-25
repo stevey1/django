@@ -18,12 +18,13 @@ class test_snippetSerializer(TestCase):
         serializer = SnippetSerializer(data={'title': 'test-de','code': 'test-decode'})
         self.assertTrue(serializer.is_valid()) 
         print(serializer.validated_data)
-        print(serializer.errors)
         self.assertTrue(serializer.validated_data['title']=='test-de') 
 
-    def test_deserialize_should_be_invalid(self):
-        serializer = SnippetSerializer(data={'title': 'test-de'})
+    def test_deserialize_should_not_be_deserialized(self):
+        serializer = SnippetSerializer(data={'title': 'django restapi test-de'})
         self.assertFalse(serializer.is_valid()) 
-        print(serializer.errors)
         self.assertIsNotNone(serializer.errors['code']) 
+        #print(serializer.errors)
+        #for error in serializer.errors.items():
+            #print(error)
 
