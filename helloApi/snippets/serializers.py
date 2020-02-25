@@ -1,10 +1,12 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES,CustomerReportRecord
+from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
+''''
 class CustomerReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerReportRecord
         fields = ['id','time_raised', 'reference', 'description']
+'''
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', read_only=True)
 

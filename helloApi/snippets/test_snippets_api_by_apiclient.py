@@ -6,38 +6,46 @@ from django.contrib.auth.models import User, Group
 
 # Create your tests here.
 class test_snippets(TestCase):
+    #def __init__(self,*args):
     @classmethod
     def setUpClass(cls):
-        client = APIClient()
-        user=User.objects.create_superuser(username='steve',email='tst@hotmail.com', password='password222',is_superuser=True, is_staff=True)
-        print(user.id)
+        cls.client = APIClient()
+        user=User.objects.create_superuser(username='steve',email='tst@hotmail.com', is_staff=True)
         Snippet.objects.create(title="title",code="code", owner=user)
-        client.force_authenticate(user=user)
+        cls.client.force_authenticate(user=user)
 
     @classmethod
     def tearDownClass(cls):
         pass
-    #def setUp(self):
-    # def tearDown(self):
+    def setUp(self):
+        pass
+    def tearDown(self):
+        pass
 
     def test_get_snippet_detail(self):
-        r= self.client.get('/snippets/1/')
-        print(r.data)
+        r= test_snippets.client.get('/snippets/1/')
         self.assertEqual(r.status_code, 200)
         self.assertContains(r, "linenos",status_code=200)
 
     def test_get_snippets(self):
-        r= self.client.get('/snippets/')
-        print(r.data)
+        r= test_snippets.client.get('/snippets/')
         self.assertEqual(r.status_code, 200)
-        #self.assertContains(r,count = 1, status_code=200)
+        self.assertContains(r,'id',count = 1, status_code=200)
+    
     def test_post_snippets(self):
-                
         #client.auth = HTTPBasicAuth('user', 'pass')
         #self.client.login(username='steve', password='')
-        r= self.client.post('/snippets/',{'title': 'title2','code':'code2'}, format='json')
+        r= test_snippets.client.post('/snippets/',{'title': 'title2','code':'code2'}, format='json')
+        self.assertEqual(r.status_code, 201)
+
+    def test_patch_snippets(self):
+        r= test_snippets.client.patch('/snippets/1/',{'title': 'titlepatch'}, format='json')
+        self.assertEqual(r.status_code, 200)
+    def test_put_snippets(self):
+        r= test_snippets.client.put('/snippets/1/',{'title': 'titleput','code':'codeput'}, format='json')
+        self.assertEqual(r.status_code, 200)
+
+    def test_head_snippets(self):
+        r= test_snippets.client.head('/snippets/')
         print(r.data)
         self.assertEqual(r.status_code, 200)
-       #self.assertContains(r,count = 1, status_code=200)
-
-
