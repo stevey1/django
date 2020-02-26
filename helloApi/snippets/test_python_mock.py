@@ -1,8 +1,8 @@
 import unittest
 from django.test import TestCase
 from unittest.mock import Mock,patch
-from .Calling import CallingClass
-from .Original import Original
+from .calling import CallingClass
+from .original import Original
 class Test_python_mock(TestCase):
     mock = Mock(test='bb')
     @patch.object(CallingClass,'test', mock.test)

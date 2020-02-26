@@ -1,4 +1,4 @@
-from .Original import Original
+from .original import Original
 class CallingClass():
     test = '100'
     @staticmethod
