@@ -6,8 +6,9 @@ class Foo:
     def iter(self):
         for i in [1, 2, 3]:
             yield i
-    def foo1(self, a):
-        pass            
+    def foo1(self, a):q
+        pass   
+
 class Autospec(unittest.TestCase):
     def test_autospect(self):
         with patch.object(Foo, 'foo1', autospec=True) as mock_foo:
