@@ -2,11 +2,17 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-
+from graphene_django.forms.mutation import DjangoModelFormMutation
+from .forms import CategoryForm
 from cookbook.ingredients.models import Category, Ingredient
 
 # Graphene will automatically map the Category model's fields onto the CategoryNode.
 # This is configured in the CategoryNode's Meta class (as you can see below)
+
+
+class CategoryType(DjangoObjectType):
+    class Meta:
+        model = Category
 
 
 class CategoryNode(DjangoObjectType):
@@ -26,10 +32,49 @@ class IngredientNode(DjangoObjectType):
             'category': ['exact'],
             'category__name': ['exact'],
         }
-        interfaces = (relay.Node, )
+        interfaces = (relay.Node,)
 
 
-class UpdateCategory(graphene.Mutation):
+class IngredientQuery(graphene.ObjectType):
+    category = relay.Node.Field(CategoryNode)
+    all_categories = DjangoFilterConnectionField(CategoryNode)
+
+    ingredient = relay.Node.Field(IngredientNode)
+    all_ingredients = DjangoFilterConnectionField(IngredientNode)
+
+
+class CategoryFormMutation(DjangoModelFormMutation):
+    Category = graphene.Field(CategoryNode)
+
+    class Meta:
+        form_class = CategoryForm
+        # not working input_field_name = 'data'
+        #return_field_name = 'my_category'
+
+
+class CategoryRelayMutation(relay.ClientIDMutation):
+    category2 = graphene.Field(CategoryNode)
+
+    class Input:
+        name = graphene.String(required=True)
+        id = graphene.ID()
+
+    # def mutate_and_get_payload(self, info, name, id=None):
+    # @classmethod
+    # def mutate_and_get_payload(cls, root, info, name, id=None):
+    @staticmethod
+    def mutate_and_get_payload(root, info, name, id=None):
+        if(id):
+            category = Category.objects.get(
+                pk=graphene.Node.from_global_id(id)[1])
+        else:
+            category = Category()
+        category.name = name
+        category.save()
+        return CategoryRelayMutation(category2=category)
+
+
+class CategoryMutation(graphene.Mutation):
     category = graphene.Field(CategoryNode)
 
     class Arguments:
@@ -44,16 +89,10 @@ class UpdateCategory(graphene.Mutation):
             category = Category()
         category.name = name
         category.save()
-        return UpdateCategory(category=category)
-
-
-class IngredientQuery(graphene.ObjectType):
-    category = relay.Node.Field(CategoryNode)
-    all_categories = DjangoFilterConnectionField(CategoryNode)
-
-    ingredient = relay.Node.Field(IngredientNode)
-    all_ingredients = DjangoFilterConnectionField(IngredientNode)
+        return CategoryMutation(category=category)
 
 
 class IngredientMutation(graphene.ObjectType):
-    update_category = UpdateCategory.Field()
+    update_category = CategoryMutation.Field()
+    update_category_by_form = CategoryFormMutation.Field()
+    update_category_by_relay = CategoryRelayMutation.Field()
