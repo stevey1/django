@@ -5,6 +5,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.forms.mutation import DjangoModelFormMutation
 from .forms import CategoryForm
 from cookbook.ingredients.models import Category, Ingredient
+from graphene_django.debug import DjangoDebug
 
 # Graphene will automatically map the Category model's fields onto the CategoryNode.
 # This is configured in the CategoryNode's Meta class (as you can see below)
@@ -20,6 +21,17 @@ class CategoryNode(DjangoObjectType):
         model = Category
         filter_fields = ['name']
         interfaces = (relay.Node, )
+
+    @classmethod
+    def get_node(cls, info, id):
+        return None
+
+
+'''
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        return queryset.filter(name="test")
+'''
 
 
 class IngredientNode(DjangoObjectType):
@@ -41,14 +53,21 @@ class IngredientQuery(graphene.ObjectType):
 
     ingredient = relay.Node.Field(IngredientNode)
     all_ingredients = DjangoFilterConnectionField(IngredientNode)
+    debug = graphene.Field(DjangoDebug, name='_debug')
+
+
+'''
+    def resolve_all_categories(self, info):
+        return Category.objects.none()
+'''
 
 
 class CategoryFormMutation(DjangoModelFormMutation):
-    Category = graphene.Field(CategoryNode)
+    category = graphene.Field(CategoryNode)
 
     class Meta:
         form_class = CategoryForm
-        # not working input_field_name = 'data'
+        input_field_name = 'data2'
         #return_field_name = 'my_category'
 
 

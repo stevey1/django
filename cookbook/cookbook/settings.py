@@ -37,12 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cookbook.ingredients',    
-    'graphene_django',    
+    'cookbook.ingredients',
+    'graphene_django',
 ]
 
 GRAPHENE = {
-    'SCHEMA': 'cookbook.schema.schema'
+    'SCHEMA': 'cookbook.schema.schema',
+    'MIDDLEWARE': [
+        'graphene_django.debug.DjangoDebugMiddleware',
+    ]
 }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,7 +88,7 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': 'Ilikeab02',
         'HOST': '127.0.0.1',
-        'PORT': '5432',     }
+        'PORT': '5432', }
 }
 
 

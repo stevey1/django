@@ -1,4 +1,4 @@
-from graphene import ObjectType, Schema
+from graphene import ObjectType, Schema, Field
 
 from cookbook.ingredients.schema import IngredientQuery, IngredientMutation
 
