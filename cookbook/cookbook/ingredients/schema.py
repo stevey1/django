@@ -1,5 +1,5 @@
 import graphene
-from graphene import relay, ObjectType, Mutation
+from graphene import relay, ObjectType
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
@@ -34,9 +34,8 @@ class IngredientNode(DjangoObjectType):
         interfaces = (relay.Node, )
 
 
-class CategoryMutation(Mutation):
-
-    class arguments:
+class CategoryMutation(graphene.Mutation):
+    class Arguments:
         name = graphene.String(required=True)
         id = graphene.ID()
 
@@ -50,7 +49,7 @@ class CategoryMutation(Mutation):
         return CategoryMutation(category=category)
 
 
-class Query(ObjectType):
+class IngredientQuery(ObjectType):
     category = relay.Node.Field(CategoryNode)
     all_categories = DjangoFilterConnectionField(CategoryNode)
 
@@ -58,5 +57,5 @@ class Query(ObjectType):
     all_ingredients = DjangoFilterConnectionField(IngredientNode)
 
 
-class Matation(ObjectType):
+class IngredientMutation(ObjectType):
     update_category = CategoryMutation.Field()
