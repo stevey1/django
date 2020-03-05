@@ -37,7 +37,11 @@ class UpdateCategory(graphene.Mutation):
         id = graphene.ID()
 
     def mutate(self, info, name, id=None):
-        category = Category.objects.get(pk=id) if (id) else Category()
+        if (id):
+            db_id = graphene.Node.from_global_id(id)[1]
+            category = Category.objects.get(pk=db_id)
+        else:
+            category = Category()
         category.name = name
         category.save()
         return UpdateCategory(category=category)
