@@ -1,18 +1,18 @@
-import graphene
+from graphene import ObjectType, Schema
 
-import cookbook.ingredients.schema
+from cookbook.ingredients.schema import IngredientQuery, IngredientMutation
 
 
-class Query(cookbook.ingredients.schema.IngredientQuery, graphene.ObjectType):
+class Query(IngredientQuery, ObjectType):
     # This class will inherit from multiple Queries
     # as we begin to add more apps to our project
     pass
 
 
-class Mutation(cookbook.ingredients.schema.IngredientMutation, graphene.ObjectType):
+class Mutation(IngredientMutation, ObjectType):
     # This class will inherit from multiple Queries
     # as we begin to add more apps to our project
     pass
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+schema = Schema(query=Query, mutation=Mutation)

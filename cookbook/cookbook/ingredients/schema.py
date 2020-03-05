@@ -1,5 +1,5 @@
 import graphene
-from graphene import relay, ObjectType
+from graphene import relay
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
@@ -7,11 +7,6 @@ from cookbook.ingredients.models import Category, Ingredient
 
 # Graphene will automatically map the Category model's fields onto the CategoryNode.
 # This is configured in the CategoryNode's Meta class (as you can see below)
-
-
-class CategoryType(DjangoObjectType):
-    class Meta:
-        model = Category
 
 
 class CategoryNode(DjangoObjectType):
@@ -34,22 +29,21 @@ class IngredientNode(DjangoObjectType):
         interfaces = (relay.Node, )
 
 
-class CategoryMutation(graphene.Mutation):
+class UpdateCategory(graphene.Mutation):
+    category = graphene.Field(CategoryNode)
+
     class Arguments:
         name = graphene.String(required=True)
         id = graphene.ID()
 
-    category = graphene.Field(CategoryType)
-
-    @classmethod
-    def mutate(cls, info, name, id):
-        category = Category.objects.get(id=id)
+    def mutate(self, info, name, id=None):
+        category = Category.objects.get(pk=id) if (id) else Category()
         category.name = name
         category.save()
-        return CategoryMutation(category=category)
+        return UpdateCategory(category=category)
 
 
-class IngredientQuery(ObjectType):
+class IngredientQuery(graphene.ObjectType):
     category = relay.Node.Field(CategoryNode)
     all_categories = DjangoFilterConnectionField(CategoryNode)
 
@@ -57,5 +51,5 @@ class IngredientQuery(ObjectType):
     all_ingredients = DjangoFilterConnectionField(IngredientNode)
 
 
-class IngredientMutation(ObjectType):
-    update_category = CategoryMutation.Field()
+class IngredientMutation(graphene.ObjectType):
+    update_category = UpdateCategory.Field()
