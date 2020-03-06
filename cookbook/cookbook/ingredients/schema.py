@@ -21,9 +21,11 @@ class CategoryNode(DjangoObjectType):
         model = Category
         filter_fields = ['name']
         interfaces = (relay.Node, )
+
     @classmethod
     def get_queryset(cls, queryset, info):
-        return queryset.prefetch_related('ingredients') 
+        return queryset.prefetch_related('ingredients')
+
 
 '''
     @classmethod
@@ -46,10 +48,10 @@ class IngredientNode(DjangoObjectType):
             'category__name': ['exact'],
         }
         interfaces = (relay.Node,)
+
     @classmethod
     def get_queryset(cls, queryset, info):
-        return queryset.select_related('category') 
-     
+        return queryset.select_related('category')
 
 
 class IngredientQuery(graphene.ObjectType):
@@ -108,7 +110,6 @@ class UpdateCategoryByRelay(relay.ClientIDMutation):
         return UpdateCategoryByRelay(category=category)
 
 
-
 class UpdateCategoryByForm(DjangoModelFormMutation):
     category = graphene.Field(CategoryNode)
 
@@ -116,6 +117,7 @@ class UpdateCategoryByForm(DjangoModelFormMutation):
         form_class = CategoryForm
         input_field_name = 'data'
         #return_field_name = 'my_category'
+
 
 class IngredientMutation(graphene.ObjectType):
     update_category = UpdateCategory.Field()
