@@ -9,6 +9,10 @@ queries = '''
     }
     mutation updateCategory($name: String!) {
         updateCategory(name: $name) {
+    		errors{
+                field
+                messages
+            }
             category {
                 id
                 name
@@ -17,19 +21,27 @@ queries = '''
     }
     mutation updateCategoryByForm {
         updateCategoryByForm(input: {name:"test123"}){
+    		errors{
+                field
+                messages
+            }
+            category{
+                id
+                name
+            }    	
+        }
+    }
+    mutation updateCategoryByFormInput($input: UpdateCategoryByFormInput!) {
+        updateCategoryByForm(input: $input){
+    		errors{
+                field
+                messages
+            }
             category {
                 id
                 name
             }
         }
     }
-    mutation updateCategoryByFormInput($input: UpdateCategoryByFormInput!) {
-                    updateCategoryByForm(input: $input){
-                        category {
-                            id
-                            name
-                        }
-                    }
-                }
 
     '''

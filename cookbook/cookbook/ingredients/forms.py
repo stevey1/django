@@ -16,9 +16,3 @@ class CategoryForm(forms.ModelForm):
                 "This is not test mode", code='invalid')
         return data
 
-    def clean(self):
-        data = self.cleaned_data['name']
-        if "test" in data:
-            raise forms.ValidationError(
-                "This is not test mode", code='invalid')
-        return data
