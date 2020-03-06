@@ -6,10 +6,11 @@ from cookbook.schema import schema
 
 class TestIngredient(GraphQLTestCase):
     GRAPHQL_SCHEMA = schema
+    fixtures = ['ingredients.json', ]
 
     def test_query(self):
-        res = self.query('''
-            query myModel {
+        res = self.query(query='''
+             {
                 allCategories {
                     pageInfo {
                         hasNextPage
@@ -17,6 +18,5 @@ class TestIngredient(GraphQLTestCase):
                     }
                 }
             }
-        ''', op_name='myModel2')
-        content = json.loads(res.content)
+        ''')
         self.assertResponseNoErrors(res)
