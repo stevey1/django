@@ -28,24 +28,31 @@ class test_category(TestCase):
     def test_get_allCategories_detail(self):
         res = self.client.get(
             '/graphql',
-            {"query": queries, "operationName": "getCategory"},
+            data={"query": queries, "operationName": "getCategory"},
             format='json')
         self.assertEqual(res.status_code, 200)
 
     def test_mutate_categoryByForm(self):
         res = self.client.post(
-            '/graphql', data={"query": queries, "operationName": "updateCategoryByForm"}, format='json')
+            '/graphql',
+            data={"query": queries, "operationName": "updateCategoryByForm"},
+            format='json')
         self.assertEqual(res.status_code, 200)
 
     def test_mutate_categoryByForm_through_input(self):
         res = self.client.post(
             '/graphql',
-            data={"query": queries, "operationName": "updateCategoryByFormInput",
-                  "variables": "{\"input\":{\"name\": \"someValue\"}}"}, format='json')
+            data={"query": queries,
+                  "operationName": "updateCategoryByFormInput",
+                  "variables": "{\"input\":{\"name\": \"someValue\"}}"},
+            format='json')
         self.assertEqual(res.status_code, 200)
 
     def test_mutate_category_through_variable(self):
         res = self.client.post(
             '/graphql',
-            data={"query": queries,              "operationName": "updateCategory", "variables": "{\"name\": \"someValue\"}"}, format='json')
+            data={"query": queries,
+                  "operationName": "updateCategory",
+                  "variables": "{\"name\": \"someValue\"}"},
+            format='json')
         self.assertEqual(res.status_code, 200)
