@@ -1,5 +1,4 @@
 import json
-
 from graphene_django.utils.testing import GraphQLTestCase
 from cookbook.schema import schema
 
@@ -10,15 +9,16 @@ class TestIngredient(GraphQLTestCase):
     # GraphQLTestCase not working
 
     def test_query(self):
-        res = self.query(query='''query getCategory {
+        getCategory = '''
+        query getCategory {
             allCategories{
                 pageInfo {
                     hasNextPage
                     }
                 }
             } 
-        ''', op_name='getCategory'
-                         )
+        '''
+        res = self.query(query=getCategory, op_name='getCategory')
         self.assertResponseNoErrors(res)
 
 
@@ -38,7 +38,6 @@ class TestUpdateCategory(GraphQLTestCase):
                 }
             }
             '''
-        res = self.query(query=updateCategory, variables="{\"name\": \"test\"}"
-
-                         )
+        res = self.query(query=updateCategory,
+                         variables="{\"name\": \"test\"}")
         self.assertResponseNoErrors(res)
