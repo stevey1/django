@@ -9,7 +9,7 @@ class TestIngredient(GraphQLTestCase):
     fixtures = ['ingredients.json', ]
     # GraphQLTestCase not working
 
-    def Xest_query(self):
+    def test_query(self):
         res = self.query(query='{allCategories{pageInfo {hasNextPage}}}'
                          # ,op_name='allCategories'
                          )

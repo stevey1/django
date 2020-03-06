@@ -25,6 +25,5 @@ class test_category(TestCase):
         pass
 
     def test_get_snippet_detail(self):
-        res = self.client.get(
-            '/graphql?query={allCategories{pageInfo{hasNextPage}}}', format='json')
+        res = self.client.get('/graphql',{"query":"{allCategories{pageInfo{hasNextPage}}}"}, format='json')
         self.assertEqual(res.status_code, 200)

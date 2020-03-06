@@ -23,6 +23,6 @@ from cookbook.ingredients.views import PrivateGraphQLView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^graphql$', GraphQLView.as_view(graphiql=True, schema=schema)),
+    url(r'^graphql/?$', GraphQLView.as_view(graphiql=True, schema=schema)),
     #url(r'^graphql$', PrivateGraphQLView.as_view(graphiql=True, schema=schema)),
 ]
