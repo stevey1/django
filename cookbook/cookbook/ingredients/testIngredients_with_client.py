@@ -30,7 +30,7 @@ class test_category(TestCase):
         self.assertEqual(res.status_code, 200)
 
     def test_mutate_categoryByForm(self):
-        res = self.client.post('/graphql', data={"query": '''
+        updateCategoryByForm = '''
             mutation myMutation {
                             updateCategoryByForm(input: {name:"test123"}){
                                 category {
@@ -38,12 +38,14 @@ class test_category(TestCase):
                                     name
                                 }
                             }
-                        }, ''', "operationName": "myMutation"}, format='json')
+                        }'''
+
+        res = self.client.post(
+            '/graphql', data={"query": updateCategoryByForm, "operationName": "myMutation"}, format='json')
         self.assertEqual(res.status_code, 200)
-    # sent by variable should work.
 
     def test_mutate_categoryByForm_through_input(self):
-        res = self.client.post('/graphql', data={"query": '''
+        updateCategoryByForm = '''
             mutation myMutation($input: UpdateCategoryByFormInput!) {
                             updateCategoryByForm(input: $input){
                                 category {
@@ -51,21 +53,19 @@ class test_category(TestCase):
                                     name
                                 }
                             }
-                        }, ''', "operationName": "myMutation", "variables": "{\"input\":{\"name\": \"someValue\"}}"}, format='json')
+                        }'''
+        res = self.client.post('/graphql', data={"query": updateCategoryByForm, "operationName": "myMutation",
+                                                 "variables": "{\"input\":{\"name\": \"someValue\"}}"}, format='json')
         self.assertEqual(res.status_code, 200)
 
 
-'''
-"input":"{\"name\": \"someValue\"}"
-
-'''
-
-
 def test_mutate_category_through_variable(self):
-    res = self.client.post('/graphql', data={"query": '''
-        mutation myMutation($name: String!) {updateCategory(name: $name) {
+    updateCategory = '''
+        mutation updateCategory($name: String!) {updateCategory(name: $name) {
                     category {
                         id
                         name}}}
-            , ''', "operationName": "myMutation", "variables": "{\"name\": \"someValue\"}"}, format='json')
+        '''
+    res = self.client.post('/graphql', data={"query": updateCategory,
+                                             "operationName": "updateCategory", "variables": "{\"name\": \"someValue\"}"}, format='json')
     self.assertEqual(res.status_code, 200)

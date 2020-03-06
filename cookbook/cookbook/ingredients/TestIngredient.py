@@ -28,7 +28,7 @@ class TestUpdateCategory(GraphQLTestCase):
     # GraphQLTestCase not working
 
     def test_update(self):
-        res = self.query(query='''
+        updateCategory = '''
            mutation myMutation($name: String!) {
                 updateCategory(name: $name) {
                     category {
@@ -37,7 +37,8 @@ class TestUpdateCategory(GraphQLTestCase):
                     }
                 }
             }
-            ''', variables="{\"name\": \"test\"}"
+            '''
+        res = self.query(query=updateCategory, variables="{\"name\": \"test\"}"
 
                          )
         self.assertResponseNoErrors(res)
