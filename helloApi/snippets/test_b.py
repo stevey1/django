@@ -6,7 +6,7 @@ class Foo:
     def iter(self):
         for i in [1, 2, 3]:
             yield i
-    def foo1(self, a):q
+    def foo1(self, a):
         pass   
 
 class Autospec(unittest.TestCase):
