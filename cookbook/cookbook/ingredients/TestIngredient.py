@@ -1,6 +1,7 @@
 import json
 from graphene_django.utils.testing import GraphQLTestCase
 from cookbook.schema import schema
+from .queries import queries
 
 
 class TestIngredient(GraphQLTestCase):
@@ -9,16 +10,7 @@ class TestIngredient(GraphQLTestCase):
     # GraphQLTestCase not working
 
     def test_query(self):
-        getCategory = '''
-        query getCategory {
-            allCategories{
-                pageInfo {
-                    hasNextPage
-                    }
-                }
-            } 
-        '''
-        res = self.query(query=getCategory, op_name='getCategory')
+        res = self.query(query=queries, op_name='getCategory')
         self.assertResponseNoErrors(res)
 
 
@@ -28,16 +20,7 @@ class TestUpdateCategory(GraphQLTestCase):
     # GraphQLTestCase not working
 
     def test_update(self):
-        updateCategory = '''
-           mutation myMutation($name: String!) {
-                updateCategory(name: $name) {
-                    category {
-                        id
-                        name
-                    }
-                }
-            }
-            '''
-        res = self.query(query=updateCategory,
+        res = self.query(query=queries,
+                         op_name="updateCategory",
                          variables="{\"name\": \"test\"}")
         self.assertResponseNoErrors(res)
