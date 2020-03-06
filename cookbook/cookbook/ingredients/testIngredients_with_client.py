@@ -38,25 +38,14 @@ class test_category(TestCase):
         self.assertEqual(res.status_code, 200)
 
     def test_mutate_categoryByForm_through_input(self):
-        updateCategoryByForm = '''
-            mutation updateCategoryByFormInput($input: UpdateCategoryByFormInput!) {
-                            updateCategoryByForm(input: $input){
-                                category {
-                                    id
-                                    name
-                                }
-                            }
-                        }
-                        '''
         res = self.client.post(
             '/graphql',
-            data={"query": updateCategoryByForm, "operationName": "updateCategoryByFormInput",
-                                                 "variables": "{\"input\":{\"name\": \"someValue\"}}"}, format='json')
+            data={"query": queries, "operationName": "updateCategoryByFormInput",
+                  "variables": "{\"input\":{\"name\": \"someValue\"}}"}, format='json')
         self.assertEqual(res.status_code, 200)
 
-
-def test_mutate_category_through_variable(self):
-    res = self.client.post(
-        '/graphql',
-        data={"query": queries,              "operationName": "updateCategory", "variables": "{\"name\": \"someValue\"}"}, format='json')
-    self.assertEqual(res.status_code, 200)
+    def test_mutate_category_through_variable(self):
+        res = self.client.post(
+            '/graphql',
+            data={"query": queries,              "operationName": "updateCategory", "variables": "{\"name\": \"someValue\"}"}, format='json')
+        self.assertEqual(res.status_code, 200)

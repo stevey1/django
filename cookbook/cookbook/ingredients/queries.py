@@ -23,5 +23,13 @@ queries = '''
             }
         }
     }
+    mutation updateCategoryByFormInput($input: UpdateCategoryByFormInput!) {
+                    updateCategoryByForm(input: $input){
+                        category {
+                            id
+                            name
+                        }
+                    }
+                }
 
     '''
