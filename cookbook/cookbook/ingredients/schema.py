@@ -21,13 +21,14 @@ class CategoryNode(DjangoObjectType):
         model = Category
         filter_fields = ['name']
         interfaces = (relay.Node, )
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        return queryset.prefetch_related('ingredients') 
 
+'''
     @classmethod
     def get_node(cls, info, id):
         return None
-
-
-'''
     @classmethod
     def get_queryset(cls, queryset, info):
         return queryset.filter(name="test")
@@ -45,6 +46,10 @@ class IngredientNode(DjangoObjectType):
             'category__name': ['exact'],
         }
         interfaces = (relay.Node,)
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        return queryset.select_related('category') 
+     
 
 
 class IngredientQuery(graphene.ObjectType):
@@ -62,17 +67,27 @@ class IngredientQuery(graphene.ObjectType):
 '''
 
 
-class CategoryFormMutation(DjangoModelFormMutation):
+class UpdateCategory(graphene.Mutation):
     category = graphene.Field(CategoryNode)
+    debug = graphene.Field(DjangoDebug, name='_debug')
 
-    class Meta:
-        form_class = CategoryForm
-        input_field_name = 'data2'
-        #return_field_name = 'my_category'
+    class Arguments:
+        name = graphene.String(required=True)
+        id = graphene.ID()
+
+    def mutate(self, info, name, id=None):
+        if (id):
+            db_id = graphene.Node.from_global_id(id)[1]
+            category = Category.objects.get(pk=db_id)
+        else:
+            category = Category()
+        category.name = name
+        category.save()
+        return UpdateCategory(category=category)
 
 
-class CategoryRelayMutation(relay.ClientIDMutation):
-    category2 = graphene.Field(CategoryNode)
+class UpdateCategoryByRelay(relay.ClientIDMutation):
+    category = graphene.Field(CategoryNode)
 
     class Input:
         name = graphene.String(required=True)
@@ -90,28 +105,19 @@ class CategoryRelayMutation(relay.ClientIDMutation):
             category = Category()
         category.name = name
         category.save()
-        return CategoryRelayMutation(category2=category)
+        return UpdateCategoryByRelay(category=category)
 
 
-class CategoryMutation(graphene.Mutation):
+
+class UpdateCategoryByForm(DjangoModelFormMutation):
     category = graphene.Field(CategoryNode)
 
-    class Arguments:
-        name = graphene.String(required=True)
-        id = graphene.ID()
-
-    def mutate(self, info, name, id=None):
-        if (id):
-            db_id = graphene.Node.from_global_id(id)[1]
-            category = Category.objects.get(pk=db_id)
-        else:
-            category = Category()
-        category.name = name
-        category.save()
-        return CategoryMutation(category=category)
-
+    class Meta:
+        form_class = CategoryForm
+        input_field_name = 'data'
+        #return_field_name = 'my_category'
 
 class IngredientMutation(graphene.ObjectType):
-    update_category = CategoryMutation.Field()
-    update_category_by_form = CategoryFormMutation.Field()
-    update_category_by_relay = CategoryRelayMutation.Field()
+    update_category = UpdateCategory.Field()
+    update_category_by_form = UpdateCategoryByForm.Field()
+    update_category_by_relay = UpdateCategoryByRelay.Field()
