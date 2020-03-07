@@ -27,7 +27,7 @@ class test_category(TestCase):
 
     def test_get_allCategories_detail(self):
         res = self.client.get(
-            '/graphql',
+            '/graphql/',
             data={"query": queries, "operationName": "getCategory"},
             format='json')
         self.assertEqual(res.status_code, 200)

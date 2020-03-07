@@ -22,5 +22,5 @@ class TestUpdateCategory(GraphQLTestCase):
     def test_update(self):
         res = self.query(query=queries,
                          op_name="updateCategory",
-                         variables="{\"name\": \"test\"}")
+                         variables="{\"name\": \"teest\"}")
         self.assertResponseNoErrors(res)

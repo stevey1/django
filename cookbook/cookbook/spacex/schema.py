@@ -25,5 +25,6 @@ class SpacexQuery(graphene.ObjectType):
         res = client.get(
             'https://api.spacexdata.com/v3/launches',
             format='json')
-        return res.data
+        print(res.context)
+        return res.context
 
