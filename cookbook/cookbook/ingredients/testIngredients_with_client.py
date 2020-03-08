@@ -25,7 +25,25 @@ class test_category(TestCase):
     def tearDown(self):
         pass
 
-    def test_get_allCategories_detail(self):
+    def test_get_allCategories2(self):
+        q='''
+            query getCategory {
+                allCategories {
+                    pageInfo {
+                        hasNextPage
+                    }
+                }
+            }
+    '''
+        res = self.client.get(
+            '/graphql/',
+            data={"query": q, 
+                "operationName": "getCategory"},
+            format='json')
+        print (res.content.data)
+        self.assertEqual(res.status_code, 200)
+
+    def test_get_allCategories(self):
         res = self.client.get(
             '/graphql/',
             data={"query": queries, "operationName": "getCategory"},

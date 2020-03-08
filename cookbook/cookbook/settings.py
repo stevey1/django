@@ -26,11 +26,12 @@ SECRET_KEY = 'w*v@$#hv2ube!y-%)ukpx#0wp(q%=brnpaqh&0n33!qt(zy(uj'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'cookbook.ingredients',
     'cookbook.spacex',
     'graphene_django',
+    
 ]
 
 GRAPHENE = {
@@ -49,10 +51,11 @@ GRAPHENE = {
     ]
 }
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -78,7 +81,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cookbook.wsgi.application'
 
-
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+    '127.0.0.1:3000'
+)
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
