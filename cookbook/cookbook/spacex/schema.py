@@ -9,7 +9,7 @@ class RocketType(ObjectType):
     rocket_id = String()
     rocket_name = String()
     rocket_type = String()
-
+ 
 class LaunchType(ObjectType):
     flight_number = Int()
     mission_name = String()
@@ -17,6 +17,7 @@ class LaunchType(ObjectType):
     launch_date_local = String()
     launch_success = Boolean()
     rocket = Field( RocketType)
+
 
 class SpacexQuery(graphene.ObjectType):
     launch = Field(LaunchType, flightNumber=Int(required=True))
@@ -30,15 +31,10 @@ class SpacexQuery(graphene.ObjectType):
         return json.loads(data)[:10]
 
    
-    def resolve_launch(parent, info,flightNumber):
+    def resolve_launch(parent, info,flightNumber=1):
         connection = http.client.HTTPSConnection("api.spacexdata.com")
         connection.request("GET", "/v3/launches/{}".format(flightNumber))
         response = connection.getresponse()
         data = response.read()
         connection.close()
         return json.loads(data)
-        '''
-        return [{'flight_number':1,'mission_name':'miss',
-            'launch_year':'1990','launch_date_local':'2010/1/1',
-            'launch_success':True,'rock':None}]
-        '''
