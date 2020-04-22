@@ -7,9 +7,12 @@ from .models import Choice, Question
 
 # Create your views here.
 class IndexView(generic.ListView):
-    template_name = "polls/index.html"
-    context_object_name = "latest_question_list"
+    # default template_name
+    # template_name = "polls/question_list.html"
+    # default context_object_name
+    # context_object_name = "question_list" #"latest_question_list"
 
+    # model = Question -> defaultQuestion.ojbects.all()
     def get_queryset(self):
         """Return the last five published questions."""
         return Question.objects.filter(pub_date__lte=timezone.now()).order_by(
@@ -19,7 +22,13 @@ class IndexView(generic.ListView):
 
 class DetailView(generic.DetailView):
     model = Question
-    template_name = "polls/detail.html"
+    # default template_name
+    # template_name = "polls/question_detail.html"
+    def get_queryset(self):
+        """
+        Excludes any questions that aren't published yet.
+        """
+        return Question.objects.filter(pub_date__lte=timezone.now())
 
 
 class ResultsView(generic.DetailView):
